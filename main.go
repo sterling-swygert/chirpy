@@ -21,21 +21,19 @@ func (cfg *apiConfig) hitsHandler(writer http.ResponseWriter, request *http.Requ
 	writer.Header().Add("Content-Type", "text/plain; charset=utf-8")
 	writer.WriteHeader(200)
 	hits := strconv.Itoa(int(cfg.fileserverHits.Load()))
-	writer.Write([]byte("Hits: " + hits))
-	fmt.Println("Hits: " + hits)
+	hitsHTML := fmt.Sprintf(`<html>
+  <body>
+    <h1>Welcome, Chirpy Admin</h1>
+    <p>Chirpy has been visited %d times!</p>
+  </body>
+</html>`, hits)
+	writer.Write([]byte(hitsHTML))
 }
 
 func (cfg *apiConfig) resetHitsHandler(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Add("Content-Type", "text/html; charset=utf-8")
 	writer.WriteHeader(200)
 	cfg.fileserverHits.Store(0)
-	hits := Itoa(int(cfg.fileserverHits.Load()))
-	fmt.Sprintf("<html>
-  <body>
-    <h1>Welcome, Chirpy Admin</h1>
-    <p>Chirpy has been visited %d times!</p>
-  </body>
-</html>", hits)
 }
 
 func (cfg *apiConfig) middlewareMetricsInc(next http.Handler) http.Handler {
